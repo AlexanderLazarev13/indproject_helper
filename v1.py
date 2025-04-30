@@ -8,7 +8,7 @@ import asyncio
 
 
 # Токен бота
-TOKEN = '7634171130:AAHOvDeDe8ywaqgGZHAU4n8JzFdEC_u0zDU'
+TOKEN = ''
 
 # Инициализация бота и диспетчера
 bot = Bot(token=TOKEN)
