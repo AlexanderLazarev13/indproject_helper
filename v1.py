@@ -37,14 +37,6 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                     curator_request_status TEXT DEFAULT 'pending')''')
 conn.commit()
 
-# Создание таблицы для запросов на кураторство
-cursor.execute('''CREATE TABLE IF NOT EXISTS curator_requests (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    student_id INTEGER,
-                    teacher_id INTEGER,
-                    status TEXT DEFAULT 'pending')''')
-conn.commit()
-
 # Создание таблицы для заданий
 cursor.execute('''CREATE TABLE IF NOT EXISTS tasks (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -52,12 +44,11 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS tasks (
                     teacher_id INTEGER,
                     task_text TEXT,
                     deadline TEXT,
-                    status TEXT)''')
+                    status TEXT,
+                    media_id TEXT,
+                    media_type TEXT)''')
 conn.commit()
 
-cursor.execute('''ALTER TABLE tasks ADD COLUMN media_id TEXT''')
-cursor.execute('''ALTER TABLE tasks ADD COLUMN media_type TEXT''')
-conn.commit()
 
 # Состояния для FSM
 class Registration(StatesGroup):
