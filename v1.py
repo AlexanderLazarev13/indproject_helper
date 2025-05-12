@@ -9,6 +9,7 @@ import asyncio
 from datetime import datetime, timedelta
 from aiogram.filters import StateFilter
 from aiogram.types import ContentType
+from random import randint
 
 
 # Токен бота
@@ -68,6 +69,14 @@ class Registration(StatesGroup):
 class CuratorRequest(StatesGroup):
     teacher_fio = State()
     teacher_password = State()
+
+class TaskAssignment(StatesGroup):
+    task_text = State()
+    task_deadline = State()
+
+class DeleteAccount(StatesGroup):
+    confirm_code = State()
+
 
 # Inline-клавиатура для выбора роли
 role_inline_keyboard = InlineKeyboardMarkup(
@@ -413,10 +422,6 @@ async def task_assign_handler(callback: types.CallbackQuery, state: FSMContext):
         await callback.answer("❌ Произошла ошибка. Некорректные данные ученика.")
 
 
-class TaskAssignment(StatesGroup):
-    task_text = State()
-    task_deadline = State()
-
 @dp.message(StateFilter('task_text'))
 async def task_text_handler(message: types.Message, state: FSMContext):
     await state.update_data(task_text=message.text)
@@ -686,10 +691,7 @@ async def task_media_handler(message: Message, state: FSMContext):
         await state.clear()
     else:
         await message.answer("❌ У вас нет активных заданий.")
-from random import randint
 
-class DeleteAccount(StatesGroup):
-    confirm_code = State()
 
 # Команда /delete для удаления аккаунта
 @dp.message(Command('delete'))
