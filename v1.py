@@ -87,7 +87,7 @@ curator_inline_keyboard = InlineKeyboardMarkup(
     ]
 )
 
-# Inline-клавиатура для студентов
+# Inline-клавиатура для возвращения к списку учеников
 students_inline_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text='Вернуться назад', callback_data='back_to_students')]
