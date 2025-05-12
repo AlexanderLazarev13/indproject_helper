@@ -1,0 +1,12 @@
+# Техническая документация #
+- ## Библиотеки: ##
+  - aiogram
+  - asyncio
+  - sqlite3
+  - datetime
+- ## Используемые инструменты/материалы: ##
+  - pycharm
+  - google coloboratory
+  - geeksforgeeks.org
+  - Telegram
+- ## Базы данных, созданные для проекта: ##
