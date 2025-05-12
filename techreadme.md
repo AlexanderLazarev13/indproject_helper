@@ -10,3 +10,5 @@
   - geeksforgeeks.org
   - Telegram
 - ## Базы данных, созданные для проекта: ##
+  - *users*:
+    -
