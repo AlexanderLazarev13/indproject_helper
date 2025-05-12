@@ -36,6 +36,8 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                     curator_id INTEGER,
                     curator_request_status TEXT DEFAULT 'pending')''')
 conn.commit()
+
+# Создание таблицы для запросов на кураторство
 cursor.execute('''CREATE TABLE IF NOT EXISTS curator_requests (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     student_id INTEGER,
