@@ -101,9 +101,9 @@ async def start_handler(message: Message, state: FSMContext):
     user = cursor.fetchone()
     if user:
       if user[0]=="Учитель":
-        await message.answer(f"✖️Вы уже зарегистрированы как {user[0]}. 💻*Ваши доступные команды:*\n/students - Посмотреть список учеников, которых вы курируете.\n/delete - Удалить ваш аккаунт.", parse_mode='Markdown'"")
+        await message.answer(f"✖️Вы уже зарегистрированы как {user[0]}. 💻*Ваши доступные команды:*\n/students - Посмотреть список учеников, которых вы курируете.\n/delete - Удалить ваш аккаунт.", parse_mode='Markdown')
       elif user[0]=="Ученик":
-        await message.answer(f"✖️Вы уже зарегистрированы как {user[0]}. 💻*Ваши доступные команды:*\n/curator - Отправить запрос на кураторство учителю.\n/delete - Удалить ваш аккаунт.", parse_mode='Markdown'"")
+        await message.answer(f"✖️Вы уже зарегистрированы как {user[0]}. 💻*Ваши доступные команды:*\n/curator - Отправить запрос на кураторство учителю.\n/delete - Удалить ваш аккаунт.", parse_mode='Markdown')
     else:
         await message.answer("👋Привет! Я помогаю с ведением ИП (индивидуальных проектов). \nВыберите свою роль:", reply_markup=role_inline_keyboard)
         await state.set_state(Registration.choosing_role)
@@ -475,7 +475,7 @@ async def task_deadline_handler(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("❌ Неправильный формат даты. Введите дату в формате *ДД.ММ* (например, 31.12).", parse_mode='Markdown')
 
-async def schedule_task_notifications(student_id, teacher_id, task_text, deadline_date):
+async def schedule_task_notifications(task_id, student_id, teacher_id, task_text, deadline_date):
     now = datetime.now()
     mid_date = now + (deadline_date - now) / 2
     last_day = deadline_date - timedelta(days=1)
