@@ -130,8 +130,8 @@ async def student_class_handler(message: Message, state: FSMContext):
 async def student_project_topic_handler(message: Message, state: FSMContext):
     user_data = await state.get_data()
     name_parts = user_data['name'].split()
-    cursor.execute('INSERT OR IGNORE INTO users (user_id, role, first_name, last_name, grade, project_topic) VALUES (?, ?, ?, ?, ?, ?)',
-                   (message.from_user.id, 'Ученик', name_parts[0], name_parts[1], user_data['grade'], message.text))
+    cursor.execute('INSERT OR IGNORE INTO users (user_id, role, first_name, last_name, grade, project_topic, username) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                   (message.from_user.id, 'Ученик', name_parts[0], name_parts[1], user_data['grade'], message.text, message.from_user.username))
     conn.commit()
     await message.answer("🥳Вы успешно зарегистрированы как Ученик!\n💻*Ваши доступные команды:*\n/curator - Отправить запрос на кураторство учителю.\n/delete - Удалить ваш аккаунт.", parse_mode='Markdown')
     await state.clear()
@@ -548,43 +548,6 @@ async def schedule_task_notifications(task_id, student_id, teacher_id, task_text
         )
 
 # Обработка заданий со стороны ученика (553 - 689)
-@dp.callback_query(lambda c: c.data == 'task_done')
-async def task_done_handler(callback: types.CallbackQuery):
-    student_id = callback.from_user.id
-
-    # Получаем активное задание с учетом teacher_id
-    cursor.execute('SELECT id, task_text FROM tasks WHERE student_id = ? AND status = ?', 
-                  (student_id, 'active'))
-    task = cursor.fetchone()
-    
-    if task:
-        task_id, task_text = task
-        
-        # Обновляем статус задания
-        cursor.execute('UPDATE tasks SET status = ? WHERE id = ?', ('done', task_id))
-        conn.commit()
-        
-        # Оповещение учителя
-        cursor.execute('SELECT curator_id FROM users WHERE user_id = ?', (student_id,))
-        curator = cursor.fetchone()
-        if curator:
-            cursor.execute('SELECT first_name, last_name, username FROM users WHERE user_id = ?', (student_id,))
-            student = cursor.fetchone()
-            student_username = f"@{student[2]}" if student[2] else "не указан"
-            
-            await bot.send_message(
-                curator[0],
-                f"✅ *Ученик выполнил задание!*\n"
-                f"📝 *Задание:* {task_text}\n"
-                f"👤 *Ученик:* {student[0]} {student[1]} ({student_username})",
-                parse_mode='Markdown'
-            )
-        
-        await callback.message.edit_reply_markup()  # Удаляем кнопки
-        await callback.message.answer("✅ Вы отметили задание как выполненное.")
-    else:
-        await callback.message.answer("❌ У вас нет активных заданий.")
-
 # Возникновение трудностей у ученика
 @dp.callback_query(lambda c: c.data == 'task_problem')
 async def task_problem_handler(callback: types.CallbackQuery):
@@ -627,7 +590,7 @@ async def task_problem_handler(callback: types.CallbackQuery):
     else:
         await callback.message.answer("❌ У вас нет активных заданий.")
 
-@dp.callback_query(lambda c: c.data == 'task_upload')
+@dp.callback_query(lambda c: c.data == 'task_done')
 async def task_upload_handler(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.answer("📸 Отправьте фото или видео выполненного задания.")
     await state.set_state("waiting_for_task_media")
@@ -707,7 +670,6 @@ async def confirm_delete_handler(message: Message, state: FSMContext):
             
             # Удаляем все связанные данные
             cursor.execute('DELETE FROM users WHERE user_id = ?', (user_id,))
-            cursor.execute('DELETE FROM curator_requests WHERE student_id = ? OR teacher_id = ?', (user_id, user_id))
             cursor.execute('DELETE FROM tasks WHERE student_id = ? OR teacher_id = ?', (user_id, user_id))
             conn.commit()
             
