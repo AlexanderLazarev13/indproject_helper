@@ -475,7 +475,7 @@ async def task_deadline_handler(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("❌ Неправильный формат даты. Введите дату в формате *ДД.ММ* (например, 31.12).", parse_mode='Markdown')
 
-async def schedule_task_notifications(task_id, student_id, teacher_id, task_text, deadline_date):
+async def schedule_task_notifications(student_id, teacher_id, task_text, deadline_date):
     now = datetime.now()
     mid_date = now + (deadline_date - now) / 2
     last_day = deadline_date - timedelta(days=1)
